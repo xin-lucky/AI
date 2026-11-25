@@ -1,0 +1,335 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>X · 我的专属AI</title>
+<link rel="icon" href="assets/logo.png">
+<link rel="stylesheet" href="app.css">
+</head>
+<body>
+
+  <!-- ============== 桌面壁纸背景层 ============== -->
+  <div class="wallpaper" id="bg-layer"></div>
+  <div class="bg-mask"></div>
+
+  <!-- ============== 应用窗口 ============== -->
+  <div class="app">
+
+    <!-- ============================================= -->
+    <!-- A 栏：全局侧栏导航  固定 300px · 深色玻璃      -->
+    <!-- ============================================= -->
+    <aside class="sidebar-a">
+      <button class="collapse-btn" id="toggle-a" title="收起侧栏">
+        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+      </button>
+      <div class="profile">
+        <div class="avatar-wrap">
+          <img src="assets/logo.png" alt="X" class="avatar">
+          <span class="online-dot"></span>
+        </div>
+        <div class="profile-text">
+          <div class="profile-title">X · 我的专属AI</div>
+          <div class="profile-sub">一直在，陪你成长 ♡</div>
+        </div>
+      </div>
+
+      <nav class="menu">
+        <button class="menu-item active" data-page="chat">
+          <svg class="mi-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          <span class="mi-label">对话</span>
+          <span class="mi-hl"></span>
+        </button>
+        <button class="menu-item" data-page="pdf">
+          <svg class="mi-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>
+          <span class="mi-label">PDF 转换</span>
+          <span class="mi-hl"></span>
+        </button>
+      </nav>
+
+      <!-- B 栏移植到 A 栏下方 -->
+      <div class="conv-block">
+        <div class="conv-head">
+          <div class="conv-head-title" id="conv-head-title">对话记录</div>
+          <div class="conv-head-actions">
+            <button class="conv-icon-btn" id="btn-select" title="多选管理">
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+            </button>
+            <button class="conv-icon-btn" id="new-chat" title="新建对话">
+              <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 5v14M5 12h14"/></svg>
+            </button>
+          </div>
+        </div>
+        <div class="conv-search">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+          <input id="chat-search" placeholder="搜索...">
+        </div>
+        <div class="conv-batch hidden" id="conv-batch">
+          <button class="cb-btn" id="batch-all">全选</button>
+          <button class="cb-btn" id="batch-pin">置顶</button>
+          <button class="cb-btn danger" id="batch-del">删除</button>
+          <button class="cb-btn ghost" id="batch-cancel">取消</button>
+        </div>
+        <div class="conv-list" id="chat-list"></div>
+      </div>
+
+      <!-- 底部：左 slogan / 右设置按钮，同一行 -->
+      <div class="sidebar-foot">
+        <div class="deco-slogan">
+          <span class="deco-line">有问题</span>
+          <span class="deco-line">尽管问我～♡</span>
+          <span class="deco-zzz">z z z</span>
+        </div>
+        <button class="foot-btn" id="btn-settings-foot" title="设置">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 1v6M12 17v6M4.22 4.22l4.24 4.24M15.54 15.54l4.24 4.24M1 12h6M17 12h6M4.22 19.78l4.24-4.24M15.54 8.46l4.24-4.24"/></svg>
+          <span>设置</span>
+        </button>
+      </div>
+    </aside>
+
+    <!-- ============================================= -->
+    <!-- B 栏移植到 A 栏下方
+
+    <!-- ============================================= -->
+    <!-- C 栏：对话主区  flex:1 · 最浅玻璃              -->
+    <!-- ============================================= -->
+    <main class="chat-area">
+      <!-- 页面容器（所有 page 共享 C 栏） -->
+      <div class="page-wrap">
+
+        <!-- ========== 对话页 ========== -->
+        <section class="page active" id="page-chat">
+          <!-- TitleBar + Header -->
+          <div class="chat-head">
+            <div class="chat-title-block">
+              <div class="chat-title-row">
+                <span class="chat-title" id="chat-title">与 X 的对话</span>
+                <svg class="chat-title-edit" id="chat-title-edit" title="重命名" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9M16.5 3.5a2.121 2.121 0 1 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/></svg>
+              </div>
+              <div class="chat-sub">一直在，陪你成长 ♡</div>
+            </div>
+            <div class="chat-actions">
+              <button class="pill-btn" id="btn-clear-chat">
+                <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>
+                清空对话
+              </button>
+              <div class="more-wrap">
+                <button class="pill-btn" id="btn-more">
+                  更多
+                  <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+                </button>
+                <div class="more-dropdown hidden" id="more-dropdown">
+                  <div class="m-item" data-act="export-chat">📥 导出本对话</div>
+                  <div class="m-item" data-act="copy-chat">📋 复制全部消息</div>
+                  <div class="m-divider"></div>
+                  <div class="m-item danger" data-act="delete-chat">🗑️ 删除整个对话</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="chat-divider"></div>
+
+          <!-- 消息流 -->
+          <div class="msg-list" id="chat-body">
+            <div class="empty-state" id="chat-empty">
+              <img src="assets/logo.png" class="empty-logo" alt="">
+              <div class="empty-title">嗨，在的嘛 ✨</div>
+              <div class="empty-sub" id="daily-quote">今天想聊点啥？随便说，我记着呢。</div>
+              <div class="chips-wrap">
+                <button class="chip" data-text="用一句话自我介绍一下你自己">🗣️ 自我介绍</button>
+                <button class="chip" data-text="帮我润色这句话：今天天气真好，适合出门走走">✍️ 帮我润色</button>
+                <button class="chip" data-text="贵阳明天天气怎么样？">🌤️ 查下天气</button>
+                <button class="chip" data-text="给我讲个冷笑话">😆 来个冷笑话</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- 输入卡 -->
+          <div class="composer">
+            <textarea id="input" placeholder="输入你的问题，和 X 聊聊吧…" rows="1"></textarea>
+            <button class="icon-btn" id="btn-image" title="上传图片">
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
+            </button>
+            <button class="icon-btn" id="btn-attach" title="上传文件">
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21.44 11.05 12.25 20.24a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>
+            </button>
+            <button class="icon-btn" id="btn-emoji" title="表情">
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2M9 9h.01M15 9h.01"/></svg>
+            </button>
+            <button class="send-btn" id="btn-send" title="发送">
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m22 2-7 20-4-9-9-4z"/><path d="M22 2 11 13"/></svg>
+            </button>
+            <button class="send-btn stop hidden" id="btn-stop" title="停止">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><rect x="6" y="6" width="12" height="12" rx="2"/></svg>
+            </button>
+            <input type="file" id="file-picker" accept=".pdf,.docx,.xlsx,.xls,.txt,.csv,.md" multiple hidden>
+            <input type="file" id="image-picker" accept="image/*" multiple hidden>
+            <input type="file" id="pdf-picker" accept="application/pdf,.pdf" hidden>
+            <div class="attach-row" id="attach-row"></div>
+          </div>
+        </section>
+
+        <!-- ========== PDF 独立页面 ========== -->
+        <section class="page" id="page-pdf">
+          <div class="sub-head"><div class="sub-title">PDF 转换</div></div>
+          <div class="pdf-layout">
+            <!-- ===== 左栏：文件 + 上传/预览 ===== -->
+            <div class="pdf-card pdf-left">
+              <div class="pdf-file-head">
+                <div class="pdf-file-badge">PDF</div>
+                <div class="pdf-file-info">
+                  <div class="pdf-file-name" id="pdf-filename">未选择文件</div>
+                  <div class="pdf-file-sub" id="pdf-pages">拖入 PDF 或点击上传区域</div>
+                </div>
+                <button class="pill-btn ghost small" id="pdf-choose">选择文件</button>
+              </div>
+              <div class="pdf-drop" id="pdf-drop">
+                <div class="pdf-drop-icon">⬆</div>
+                <div class="pdf-drop-title">点击或拖拽 PDF 文件至此</div>
+                <div class="pdf-drop-sub">支持高速本地解析，单个文件最大 100MB</div>
+                <div class="pdf-drop-btn">浏览本地文件</div>
+                <input type="file" id="pdf-file" accept="application/pdf,.pdf" hidden>
+              </div>
+              <div class="pdf-preview hidden" id="pdf-preview">
+                <div class="pdf-preview-head">
+                  <div class="pdf-preview-title">PDF 预览</div>
+                  <div class="pdf-pager" id="pdf-pager">
+                    <button type="button" id="pdf-prev" aria-label="上一页">‹</button>
+                    <span id="pdf-page-ind">1 / 1</span>
+                    <button type="button" id="pdf-next" aria-label="下一页">›</button>
+                  </div>
+                </div>
+                <div class="pdf-preview-stage">
+                  <img id="pdf-preview-img" alt="PDF 页面预览">
+                </div>
+              </div>
+            </div>
+
+            <!-- ===== 右栏：格式 + 执行 ===== -->
+            <div class="pdf-card pdf-right">
+              <div class="pdf-step-head">
+                <span class="pdf-step-no">01</span>
+                <div>
+                  <div class="pdf-step-title">选择导出方式</div>
+                  <div class="pdf-step-sub">图片和 Word 不再混淆，按真实能力标注。</div>
+                </div>
+              </div>
+              <div class="pdf-fmt-grid" id="pdf-formats"></div>
+              <div class="pdf-mode-tip" id="pdf-mode-tip">Word 图片版会把每页 PDF 渲染成高清图片放进 DOCX。它不是文字识别，只是版式保真方案。</div>
+
+              <div class="pdf-step-head">
+                <span class="pdf-step-no">02</span>
+                <div>
+                  <div class="pdf-step-title">执行转换</div>
+                  <div class="pdf-step-sub">完成后会写入生成记录，可重复下载。</div>
+                </div>
+              </div>
+              <div class="pdf-status-box" id="pdf-status">等待选择 PDF 文件。</div>
+              <button class="send-btn big full" id="pdf-convert">开始转换</button>
+
+              <div class="pdf-result hidden" id="pdf-result">
+                <div class="pdf-result-icon">✅</div>
+                <div class="pdf-result-title" id="pdf-result-title"></div>
+                <div class="pdf-result-meta" id="pdf-result-meta"></div>
+                <div class="pdf-action-row">
+                  <a class="send-btn big" id="pdf-download" href="#" download>下载文件</a>
+                  <button class="pill-btn ghost" id="pdf-again">再来一个</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 底部 HISTORY -->
+          <div class="pdf-history">
+            <div class="pdf-history-head">
+              <div class="pdf-history-title">生成记录</div>
+              <button class="pill-btn ghost small" id="pdf-clear-history">清空</button>
+            </div>
+            <div class="pdf-history-list" id="pdf-history-list"></div>
+          </div>
+        </section>
+
+        <!-- ========== 设置页 ========== -->
+        <section class="page" id="page-settings">
+          <div class="sub-head"><div class="sub-title">设置</div></div>
+
+          <div class="settings-tabs">
+            <button class="set-tab active" data-tab="basic">基础</button>
+            <button class="set-tab" data-tab="persona">人格</button>
+            <button class="set-tab" data-tab="memory">记忆</button>
+            <button class="set-tab" data-tab="feedback">训练中心</button>
+          </div>
+
+          <!-- Tab 1: 基础设置 -->
+          <div class="set-panel active" data-panel="basic">
+            <div class="form-card">
+              <div class="form-row"><label>对话模型</label><select id="s-chat-model"></select></div>
+              <div class="form-row"><label>温度（越高越放飞）</label><input type="number" id="s-temperature" step="0.05" min="0" max="1"></div>
+              <div class="form-row"><label>上下文长度</label><input type="number" id="s-num_ctx" step="512" min="2048" max="32768"></div>
+              <div class="form-row"><label>自动记忆</label><input type="checkbox" id="s-memory-enabled" checked></div>
+              <div class="form-row">
+                <label>贵州化方言回复 <span style="color:var(--text-muted);font-weight:400;">（关掉后回复正常普通话）</span></label>
+                <input type="checkbox" id="s-dialect-enabled" checked>
+              </div>
+              <div style="height:1px;background:rgba(0,0,0,.08);margin:12px 0;"></div>
+              <div class="form-row">
+                <label>主题配色</label>
+                <div class="theme-switch" id="theme-switch">
+                  <button class="t-btn active" data-theme="purple">紫</button>
+                  <button class="t-btn" data-theme="blue">蓝</button>
+                  <button class="t-btn" data-theme="green">绿</button>
+                  <button class="t-btn" data-theme="warm">暖</button>
+                  <button class="t-btn" data-theme="dark">黑</button>
+                </div>
+              </div>
+              <div class="form-row">
+                <label>背景图片</label>
+                <div class="bg-controls">
+                  <input type="file" id="bg-upload" accept="image/*">
+                  <button class="pill-btn ghost" id="bg-reset">恢复默认</button>
+                </div>
+              </div>
+              <div class="form-row"><label>背景透明度 <span id="bg-opacity-val">100%</span></label><input type="range" id="bg-opacity" min="0" max="100" value="100"></div>
+              <button class="send-btn big" id="btn-settings-save">保存设置</button>
+              <a class="pill-btn ghost inline" id="btn-export">导出全部数据</a>
+            </div>
+          </div>
+
+          <!-- Tab 2: 人格设置 -->
+          <div class="set-panel" data-panel="persona">
+            <div class="sub-actions" style="margin:0 28px 10px;"><button class="pill-btn ghost" id="btn-persona-reset">恢复默认</button></div>
+            <div class="form-card">
+              <div class="form-row"><label>AI 名字</label><input id="p-ai_name"></div>
+              <div class="form-row"><label>怎么称呼你</label><input id="p-user_name"></div>
+              <div class="form-row"><label>性格（决定它是谁）</label><textarea id="p-personality" rows="4"></textarea></div>
+              <div class="form-row"><label>说话方式（决定语气节奏）</label><textarea id="p-tone" rows="3"></textarea></div>
+              <div class="form-row"><label>边界（什么不能做）</label><textarea id="p-boundaries" rows="3"></textarea></div>
+              <div class="form-row"><label>打招呼用的开场白</label><input id="p-greeting"></div>
+              <button class="send-btn big" id="btn-persona-save">保存人格</button>
+            </div>
+          </div>
+
+          <!-- Tab 3: 记忆 -->
+          <div class="set-panel" data-panel="memory">
+            <div class="sub-actions" style="margin:0 28px 10px;"><button class="pill-btn" id="btn-memory-new">+ 新建记忆</button></div>
+            <div class="search-field wide" style="margin:0 28px 12px;"><input id="memory-search" placeholder="搜索记忆..."></div>
+            <div class="list-wrap" id="memory-list"></div>
+          </div>
+
+          <!-- Tab 4: 训练中心 -->
+          <div class="set-panel" data-panel="feedback">
+            <div class="sub-actions" style="margin:0 28px 10px;" id="feedback-stats"></div>
+            <div class="list-wrap" id="feedback-list"></div>
+          </div>
+        </section>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast hidden" id="toast"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>

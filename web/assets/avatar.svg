@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="XIN 形象">
+  <ellipse cx="32" cy="50" rx="17" ry="3.4" fill="#2a2521" opacity="0.08"/>
+  <path d="M31.5 13.5C30.2 9.2 32.4 5.6 36.6 3.2" fill="none" stroke="#41604f" stroke-width="2.8" stroke-linecap="round"/>
+  <path d="M36.8 6.6C41.6 2.6 47.6 3.4 49.8 6.2C45.2 10.6 39.4 10.8 36.8 6.6Z" fill="#4a7a62"/>
+  <path d="M32 12.5C19.8 12.5 10.5 21.7 10.5 33.6C10.5 45.4 20 54 32 54C44 54 53.5 45.4 53.5 33.6C53.5 21.7 44.2 12.5 32 12.5Z" fill="#2a2521"/>
+  <ellipse cx="24.5" cy="32" rx="3.3" ry="3.6" fill="#f6f0de"/>
+  <ellipse cx="39.5" cy="32" rx="3.3" ry="3.6" fill="#f6f0de"/>
+  <circle cx="25.4" cy="32.8" r="1.4" fill="#2a2521"/>
+  <circle cx="40.4" cy="32.8" r="1.4" fill="#2a2521"/>
+  <path d="M26.8 41.6C29.6 44.4 34.4 44.4 37.2 41.6" fill="none" stroke="#f6f0de" stroke-width="2.3" stroke-linecap="round"/>
+  <circle cx="16.6" cy="38" r="3.1" fill="#b0492b" opacity="0.32"/>
+  <circle cx="47.4" cy="38" r="3.1" fill="#b0492b" opacity="0.32"/>
+</svg>
